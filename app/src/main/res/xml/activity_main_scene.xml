@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/initial">
+
+        <Constraint android:id="@id/cards"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint android:id="@id/selected_card">
+            <Layout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="38dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="38dp"
+                android:layout_marginBottom="38dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="2.5:3.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <PropertySet android:visibility="gone" />
+            <CustomAttribute
+                app:attributeName="cardBackgroundColor"
+                app:customColorValue="@color/cardBackColor" />
+        </Constraint>
+
+        <Constraint android:id="@id/selected_card_title">
+            <Layout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/selected_card"
+                app:layout_constraintEnd_toEndOf="@id/selected_card"
+                app:layout_constraintStart_toStartOf="@id/selected_card"
+                app:layout_constraintTop_toTopOf="@id/selected_card" />
+            <PropertySet android:visibility="gone" />
+
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/selected"
+        app:deriveConstraintsFrom="@id/initial">
+
+        <Constraint android:id="@id/cards">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+
+        <Constraint android:id="@id/selected_card">
+            <PropertySet android:alpha="1" />
+            <Transform android:rotationY="180" />
+            <CustomAttribute
+                app:attributeName="cardBackgroundColor"
+                app:customColorValue="@color/cardBackColor" />
+        </Constraint>
+
+        <Constraint android:id="@id/selected_card_title">
+            <Transform android:rotationY="180" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/revealed"
+        app:deriveConstraintsFrom="@id/selected">
+
+        <Constraint android:id="@id/selected_card">
+            <Transform android:rotationY="360" />
+            <CustomAttribute
+                app:attributeName="cardBackgroundColor"
+                app:customColorValue="@color/cardFrontColor" />
+        </Constraint>
+
+        <Constraint android:id="@id/selected_card_title">
+            <Transform
+                android:elevation="8dp"
+                android:rotationY="360" />
+            <PropertySet android:alpha="1" />
+        </Constraint>
+    </ConstraintSet>
+
+    <Transition
+        android:id="@+id/select_card"
+        app:constraintSetEnd="@id/selected"
+        app:constraintSetStart="@id/initial"
+        app:duration="600"
+        app:motionInterpolator="easeIn">
+
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                app:framePosition="30"
+                app:motionTarget="@id/cards" />
+
+            <KeyAttribute
+                android:rotationY="0"
+                app:framePosition="30"
+                app:motionTarget="@id/selected_card" />
+        </KeyFrameSet>
+    </Transition>
+
+    <Transition
+        android:id="@+id/reveal_card"
+        app:constraintSetEnd="@id/revealed"
+        app:constraintSetStart="@id/selected"
+        app:duration="600">
+
+        <OnClick
+            app:clickAction="transitionToEnd"
+            app:targetId="@id/selected_card" />
+
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                app:framePosition="50"
+                app:motionTarget="@id/selected_card_title" />
+        </KeyFrameSet>
+    </Transition>
+
+    <Transition
+        android:id="@+id/restart"
+        app:constraintSetEnd="@id/initial"
+        app:constraintSetStart="@id/revealed"
+        app:duration="600">
+
+        <OnClick
+            app:clickAction="transitionToEnd"
+            app:targetId="@id/selected_card" />
+
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                app:framePosition="10"
+                app:motionTarget="@id/selected_card_title" />
+        </KeyFrameSet>
+    </Transition>
+
+</MotionScene>
