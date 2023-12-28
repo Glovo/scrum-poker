@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.activity_main.*
+import com.mati1.scrumpoker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), CardAdapter.CardClickListener {
 
@@ -12,20 +12,23 @@ class MainActivity : AppCompatActivity(), CardAdapter.CardClickListener {
     private val cardsAdapter = CardAdapter(this)
     private val cardSelected = MutableLiveData<Card>()
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        cards.adapter = cardsAdapter
+        binding.cards.adapter = cardsAdapter
 
         cardsData.observe(this, Observer { cardsAdapter.submitList(it) })
         cardsData.postValue(listOf(0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144).map { Card(it.toString()) })
 
         cardSelected.observe(this, Observer {
-            selected_card_title.text = it.title
+            binding.selectedCardTitle.text = it.title
 
-            motion.setTransition(R.id.select_card)
-            motion.transitionToEnd()
+            binding.motion.setTransition(R.id.select_card)
+            binding.motion.transitionToEnd()
         })
     }
 
